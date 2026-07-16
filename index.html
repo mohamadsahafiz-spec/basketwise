@@ -12,8 +12,8 @@
     
     <title>Basketwise — Grocery planner</title>
     <link rel="manifest" href="manifest.json" />
-    <link rel="icon" type="image/jpeg" href="app-icon.jpg?v=4" />
-    <link rel="apple-touch-icon" href="app-icon.jpg?v=4" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="apple-touch-icon" href="logo.png" />
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +23,7 @@
       :root{--ink:#183c3a;--dark:#103d3b;--cream:#f8f5ed;--paper:#fffdfa;--line:#e6e4dd;--muted:#69716c;--lime:#d8f15b;--lime-deep:#769100;--coral:#fa866a;--peach:#ffe0cd;--shadow:0 12px 35px rgba(26,57,54,.07)}
       
       body.dark-theme { --ink: #f8f5ed; --dark: #0a201f; --cream: #123d3b; --paper: #1a4d4a; --line: #2a6b66; --muted: #a4c4bc; --peach: #2a6b66; }
-      body.dark-theme .compare-toolbar select, body.dark-theme .search, body.dark-theme .chip, body.dark-theme .qty-control button, body.dark-theme .add-button, body.dark-theme .price-dialog input, body.dark-theme .price-dialog select { background: var(--dark); color: var(--ink); border-color: var(--line); }
+      body.dark-theme .compare-toolbar select, body.dark-theme .search, body.dark-theme .chip, body.dark-theme .qty-control button, body.dark-theme .add-button, body.dark-theme .price-dialog input, body.dark-theme .price-dialog select, body.dark-theme #item-sort-select { background: var(--dark); color: var(--ink); border-color: var(--line); }
       body.dark-theme .search input, body.dark-theme .trip-name input { color: var(--ink); }
       body.dark-theme .cart-store-head, body.dark-theme .item-photo { background: var(--dark); }
       body.dark-theme .route-store { background: var(--dark); color: var(--ink); }
@@ -33,7 +33,7 @@
       .shell{max-width:1240px;margin:auto;padding:0 34px 80px}.topbar{height:82px;display:flex;justify-content:space-between;align-items:center}.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:700;font-size:21px;letter-spacing:-.8px}.brand-mark{width:31px;height:31px;border-radius:50%;background:var(--lime);display:grid;place-items:center;font-family:Fraunces;font-size:25px;font-style:italic; color:#183c3a;}.top-actions{display:flex;align-items:center;gap:12px}.freshness{font-size:12px;color:var(--muted)}.freshness i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#73a84d;margin-right:6px}.avatar{border:0;background:var(--ink);color:white;width:34px;height:34px;border-radius:50%;font-weight:bold; cursor:pointer; display:grid; place-items:center;}.hero{border-radius:24px;background:var(--dark);color:white;min-height:244px;padding:42px 52px;display:flex;justify-content:space-between;overflow:hidden;position:relative}.eyebrow,.card-label{font:500 11px "DM Mono",monospace;letter-spacing:1.05px;margin:0 0 12px;color:#758783}.hero .eyebrow{color:#b8cfc7}.hero h1{font:600 clamp(40px,5.5vw,64px)/.98 Fraunces,serif;letter-spacing:-2.8px;margin:0}.hero h1 em{color:var(--lime);font-style:italic}.hero-copy{margin:17px 0 0;color:#c6d4cf;font-size:16px}.hero-art{position:relative;width:270px}
       
       .tabs{display:flex;gap:24px;border-bottom:1px solid var(--line); margin:10px 0 20px; padding:20px 0 16px; position:sticky; top:0; z-index:5; background:var(--cream);}
-      .tab{font:600 14px "DM Sans";color:#78807c;border:0;background:none;padding:0 0 16px;cursor:pointer;position:relative}.tab.active{color:var(--ink)}.tab.active:after{content:"";height:3px;background:var(--ink);border-radius:3px;position:absolute;bottom:-1px;left:0;right:0}.tab span{font:500 10px "DM Mono";background:var(--peach);padding:3px 5px;border-radius:5px;color:#925745}.tab.active span{background:var(--lime);color:#183c3a;}.view{display:none}.view.active{display:block}.dashboard-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:27px 28px;box-shadow:var(--shadow)}.basket-amount{display:flex;align-items:baseline;gap:14px}.basket-amount span{font:700 36px/1 Fraunces;color:var(--ink);letter-spacing:-1.5px}.basket-amount small{color:var(--muted);font-size:13px}.savings-line{font-size:13px;color:var(--lime-deep);font-weight:600;margin:17px 0 12px}.progress{height:8px;border-radius:8px;background:#e9ece4;overflow:hidden}.progress span{display:block;height:100%;width:0;background:var(--lime);border-radius:inherit;transition:width .2s}.progress-meta{display:flex;justify-content:space-between;margin-top:9px;color:#79817d;font:11px "DM Mono"}.card-heading{display:flex;justify-content:space-between}.card h2,.section-head h2,.verify-intro h2{font:600 25px/1 Fraunces;margin:0;letter-spacing:-.8px}.route-icon{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--peach);font-size:19px}.route-empty{font-size:14px;color:var(--muted);padding-top:18px}.route-stores{display:flex;gap:9px;padding-top:16px;flex-wrap:wrap}.route-store{padding:9px 10px;background:#f3f4ed;border-radius:10px;font-size:12px;font-weight:600}.route-store b{display:block;color:var(--lime-deep);font:11px "DM Mono";margin-top:3px}.list-section{margin-top:41px}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}.section-head .eyebrow{margin-bottom:8px}.text-button{border:0;background:none;color:var(--muted);font:600 13px "DM Sans";cursor:pointer}.text-button:hover{color:var(--ink)}.controls{display:flex;gap:10px;margin-bottom:10px}.search{height:45px;background:white;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;gap:9px;padding:0 14px;flex:1;max-width:430px;color:#71807a}.search span{font:24px/1 Arial;transform:rotate(-20deg)}.search input{border:0;outline:0;width:100%;font:14px "DM Sans";background:transparent;color:var(--ink)}.chips{display:flex;gap:7px;overflow:auto; margin-bottom: 20px;}.chip{border:1px solid var(--line);background:white;border-radius:20px;padding:0 12px;color:#6b746f;font:600 12px "DM Sans";white-space:nowrap;cursor:pointer}.chip.active{background:var(--ink);border-color:var(--ink);color:white}.item-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.item-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;align-items:center;gap:13px;transition:.2s}.item-card.selected{border-color:#b9d741;box-shadow:0 5px 18px rgba(114,145,0,.09)}.item-icon{width:41px;height:41px;border-radius:12px;background:#edf1e0;display:grid;place-items:center;font-size:20px;flex:0 0 auto}.item-info{min-width:0;flex:1}.item-info h3{font-size:13px;line-height:1.25;margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item-info p{margin:0;color:#767d79;font:11px "DM Mono"}.price{font-weight:700;font-size:14px}.price small{display:block;color:var(--lime-deep);font:10px "DM Mono";margin-top:3px}.add-button{width:31px;height:31px;border:1px solid var(--line);border-radius:50%;background:white;color:var(--ink);font-size:21px;line-height:1;cursor:pointer}.selected .add-button{background:var(--lime);border-color:var(--lime);font-size:0; color:#183c3a;}.selected .add-button:after{content:"✓";font-size:15px;font-weight:bold}.compare-head p:not(.eyebrow),.value-hero p:not(.eyebrow),.verify-intro p:not(.eyebrow){color:var(--muted);font-size:14px;margin:9px 0 0}.legend{display:flex;gap:16px;font-size:12px;color:var(--muted)}.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.legend-dot.best{background:var(--lime)}.legend-dot.missing{background:var(--line)}.compare-toolbar{display:flex;gap:12px;margin:22px 0 15px}.compare-toolbar select{border:1px solid var(--line);border-radius:10px;background:white;padding:0 12px;color:var(--ink);font:13px "DM Sans"}.comparison-table-wrap{overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:15px}table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}th{text-align:right;padding:16px 18px;color:var(--muted);font:10px "DM Mono";letter-spacing:.7px;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}td{padding:15px 18px;text-align:right;border-bottom:1px solid var(--line);color:var(--muted)}tbody tr:last-child td{border:0}.table-item{font-weight:600;color:var(--ink)}.table-item small{display:block;font:10px "DM Mono";color:var(--muted);margin-top:3px}.best-cell{color:var(--ink);font-weight:700}.best-cell span{background:var(--lime);color:#183c3a;padding:5px 8px;border-radius:7px}.missing-cell{color:var(--muted); opacity: 0.5;}.best-store{font:600 11px "DM Mono";color:var(--lime-deep)}.value-hero{background:var(--peach);border-radius:20px;padding:30px 35px;display:flex;justify-content:space-between;align-items:center}.value-hero h2{font:600 32px/1 Fraunces;margin:0;letter-spacing:-1px}.value-hero p:not(.eyebrow){max-width:560px;color:var(--ink); opacity: 0.8;}.trophy{width:75px;height:75px;border-radius:50%;background:var(--coral);display:grid;place-items:center;color:white;font-size:34px;box-shadow:8px 8px 0 rgba(255,255,255,.25)}.value-list{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.value-card{background:var(--paper);padding:18px;border:1px solid var(--line);border-radius:14px}.value-rank{font:600 11px "DM Mono";color:var(--lime-deep)}.value-card h3{font-size:14px;margin:12px 0 7px;line-height:1.3}.value-card p{font-size:12px;color:var(--muted);margin:0}.unit-price{font:600 21px Fraunces;color:var(--ink);margin-top:16px}.unit-price small{font:11px "DM Mono";color:var(--muted)}.verify-intro{background:var(--dark);padding:37px 40px;color:white;border-radius:20px}.verify-intro .eyebrow{color:#a4c4bc}.verify-intro h2{font-size:34px}.verify-intro p:not(.eyebrow){color:#c0d1ca}.verify-list{margin-top:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.verify-card{display:flex;gap:14px;align-items:center;padding:17px;background:var(--paper);border:1px solid var(--line);border-radius:13px}.verify-check{width:23px;height:23px;border:1.5px solid var(--line);border-radius:7px;background:transparent;cursor:pointer}.verify-card.done{opacity:.5}.verify-card.done .verify-check{background:var(--lime);border-color:var(--lime)}.verify-card h3{font-size:13px;margin:0 0 4px}.verify-card p{font-size:11px;color:var(--muted);margin:0}
+      .tab{font:600 14px "DM Sans";color:#78807c;border:0;background:none;padding:0 0 16px;cursor:pointer;position:relative}.tab.active{color:var(--ink)}.tab.active:after{content:"";height:3px;background:var(--ink);border-radius:3px;position:absolute;bottom:-1px;left:0;right:0}.tab span{font:500 10px "DM Mono";background:var(--peach);padding:3px 5px;border-radius:5px;color:#925745}.tab.active span{background:var(--lime);color:#183c3a;}.view{display:none}.view.active{display:block}.dashboard-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:27px 28px;box-shadow:var(--shadow)}.basket-amount{display:flex;align-items:baseline;gap:14px}.basket-amount span{font:700 36px/1 Fraunces;color:var(--ink);letter-spacing:-1.5px}.basket-amount small{color:var(--muted);font-size:13px}.savings-line{font-size:13px;color:var(--lime-deep);font-weight:600;margin:17px 0 12px}.progress{height:8px;border-radius:8px;background:#e9ece4;overflow:hidden}.progress span{display:block;height:100%;width:0;background:var(--lime);border-radius:inherit;transition:width .2s}.progress-meta{display:flex;justify-content:space-between;margin-top:9px;color:#79817d;font:11px "DM Mono"}.card-heading{display:flex;justify-content:space-between}.card h2,.section-head h2,.verify-intro h2{font:600 25px/1 Fraunces;margin:0;letter-spacing:-.8px}.route-icon{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--peach);font-size:19px}.route-empty{font-size:14px;color:var(--muted);padding-top:18px}.route-stores{display:flex;gap:9px;padding-top:16px;flex-wrap:wrap}.route-store{padding:9px 10px;background:#f3f4ed;border-radius:10px;font-size:12px;font-weight:600}.route-store b{display:block;color:var(--lime-deep);font:11px "DM Mono";margin-top:3px}.list-section{margin-top:41px}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}.section-head .eyebrow{margin-bottom:8px}.text-button{border:0;background:none;color:var(--muted);font:600 13px "DM Sans";cursor:pointer}.text-button:hover{color:var(--ink)}.controls{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;}.search{height:45px;background:white;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;gap:9px;padding:0 14px;flex:2;min-width:240px;color:#71807a}.search span{font:24px/1 Arial;transform:rotate(-20deg)}.search input{border:0;outline:0;width:100%;font:14px "DM Sans";background:transparent;color:var(--ink)}.item-sort-select{height:45px;background:white;border:1px solid var(--line);border-radius:11px;padding:0 12px;color:var(--ink);font:600 13px "DM Sans";cursor:pointer;outline:none;flex:1;min-width:160px;} .chips{display:flex;gap:7px;overflow:auto; margin-bottom: 20px;}.chip{border:1px solid var(--line);background:white;border-radius:20px;padding:0 12px;color:#6b746f;font:600 12px "DM Sans";white-space:nowrap;cursor:pointer}.chip.active{background:var(--ink);border-color:var(--ink);color:white}.item-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.item-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;align-items:center;gap:13px;transition:.2s}.item-card.selected{border-color:#b9d741;box-shadow:0 5px 18px rgba(114,145,0,.09)}.item-icon{width:41px;height:41px;border-radius:12px;background:#edf1e0;display:grid;place-items:center;font-size:20px;flex:0 0 auto}.item-info{min-width:0;flex:1}.item-info h3{font-size:13px;line-height:1.25;margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item-info p{margin:0;color:#767d79;font:11px "DM Mono"}.price{font-weight:700;font-size:14px}.price small{display:block;color:var(--lime-deep);font:10px "DM Mono";margin-top:3px}.add-button{width:31px;height:31px;border:1px solid var(--line);border-radius:50%;background:white;color:var(--ink);font-size:21px;line-height:1;cursor:pointer}.selected .add-button{background:var(--lime);border-color:var(--lime);font-size:0; color:#183c3a;}.selected .add-button:after{content:"✓";font-size:15px;font-weight:bold}.compare-head p:not(.eyebrow),.value-hero p:not(.eyebrow),.verify-intro p:not(.eyebrow){color:var(--muted);font-size:14px;margin:9px 0 0}.legend{display:flex;gap:16px;font-size:12px;color:var(--muted)}.legend-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.legend-dot.best{background:var(--lime)}.legend-dot.missing覆{background:var(--line)}.compare-toolbar{display:flex;gap:12px;margin:22px 0 15px}.compare-toolbar select{border:1px solid var(--line);border-radius:10px;background:white;padding:0 12px;color:var(--ink);font:13px "DM Sans"}.comparison-table-wrap{overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:15px}table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}th{text-align:right;padding:16px 18px;color:var(--muted);font:10px "DM Mono";letter-spacing:.7px;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}td{padding:15px 18px;text-align:right;border-bottom:1px solid var(--line);color:var(--muted)}tbody tr:last-child td{border:0}.table-item{font-weight:600;color:var(--ink)}.table-item small{display:block;font:10px "DM Mono";color:var(--muted);margin-top:3px}.best-cell{color:var(--ink);font-weight:700}.best-cell span{background:var(--lime);color:#183c3a;padding:5px 8px;border-radius:7px}.missing-cell{color:var(--muted); opacity: 0.5;}.best-store{font:600 11px "DM Mono";color:var(--lime-deep)}.value-hero{background:var(--peach);border-radius:20px;padding:30px 35px;display:flex;justify-content:space-between;align-items:center}.value-hero h2{font:600 32px/1 Fraunces;margin:0;letter-spacing:-1px}.value-hero p:not(.eyebrow){max-width:560px;color:var(--ink); opacity: 0.8;}.trophy{width:75px;height:75px;border-radius:50%;background:var(--coral);display:grid;place-items:center;color:white;font-size:34px;box-shadow:8px 8px 0 rgba(255,255,255,.25)}.value-list{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.value-card{background:var(--paper);padding:18px;border:1px solid var(--line);border-radius:14px}.value-rank{font:600 11px "DM Mono";color:var(--lime-deep)}.value-card h3{font-size:14px;margin:12px 0 7px;line-height:1.3}.value-card p{font-size:12px;color:var(--muted);margin:0}.unit-price{font:600 21px Fraunces;color:var(--ink);margin-top:16px}.unit-price small{font:11px "DM Mono";color:var(--muted)}.verify-intro{background:var(--dark);padding:37px 40px;color:white;border-radius:20px}.verify-intro .eyebrow{color:#a4c4bc}.verify-intro h2{font-size:34px}.verify-intro p:not(.eyebrow){color:#c0d1ca}.verify-list{margin-top:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.verify-card{display:flex;gap:14px;align-items:center;padding:17px;background:var(--paper);border:1px solid var(--line);border-radius:13px}.verify-check{width:23px;height:23px;border:1.5px solid var(--line);border-radius:7px;background:transparent;cursor:pointer}.verify-card.done{opacity:.5}.verify-card.done .verify-check{background:var(--lime);border-color:var(--lime)}.verify-card h3{font-size:13px;margin:0 0 4px}.verify-card p{font-size:11px;color:var(--muted);margin:0}
       
       #toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--cream);padding:11px 16px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;box-shadow:var(--shadow); z-index: 999;}#toast.show{opacity:1;transform:translate(-50%,0)}
       
@@ -71,7 +71,6 @@
           <p class="hero-copy">Lets go buy TOY baba.</p>
         </div>
         <div class="hero-art" aria-hidden="true">
-          <!-- STRENGTHENED: added 'this.onerror=null' to explicitly stop infinite crash loops -->
           <img src="images/nuh omel.jpg" style="width: 220px; height: 220px; border-radius: 24px; object-fit: cover; transform: rotate(9deg); box-shadow: 0 15px 35px rgba(0,0,0,0.3);" alt="My Hero Image" />
         </div>
       </section>
@@ -121,9 +120,19 @@
           <div class="section-head"><div><p class="eyebrow">BUILD YOUR LIST</p><h2>What are you buying?</h2></div><button class="text-button" id="clear-list">Clear list</button></div>
           
           <div class="controls">
-            <label class="search" style="flex:1;"><span>⌕</span><input id="search" placeholder="Search groceries, baby care..." /></label>
-            <!-- NEW: Add Store Button -->
-            <button id="btn-add-store" class="btn-secondary" style="white-space:nowrap; padding: 0 16px; margin-right: 6px;">+ Store</button>
+            <label class="search"><span>⌕</span><input id="search" placeholder="Search groceries, baby care..." /></label>
+            
+            <!-- NEW: Interactive Sorting Control Menu -->
+            <select id="item-sort-select" class="item-sort-select">
+              <option value="default">Sort: Default</option>
+              <option value="alpha-az">Alphabetical (A-Z)</option>
+              <option value="alpha-za">Alphabetical (Z-A)</option>
+              <option value="price-l2h">Price: Low to High</option>
+              <option value="price-h2l">Price: High to Low</option>
+              <option value="recent">Recent Purchases 🧸</option>
+            </select>
+            
+            <button id="btn-add-store" class="btn-secondary" style="white-space:nowrap; padding: 0 16px;">+ Store</button>
             <button id="btn-add-item" class="btn-secondary" style="white-space:nowrap; padding: 0 16px;">+ Item</button>
           </div>
           
@@ -141,12 +150,10 @@
         <div class="section-head compare-head"><div><p class="eyebrow">PRICE TRACKER</p><h2>Price comparison</h2><p>We highlight the best price, so the choice is obvious.</p></div><div class="legend"><span><i class="legend-dot best"></i> Best price</span><span><i class="legend-dot missing"></i> Not listed</span></div></div>
         <div class="compare-toolbar">
           <label class="search"><span>⌕</span><input id="compare-search" placeholder="Find an item" /></label>
-          <!-- Now populated dynamically by JS -->
           <select id="store-filter"></select>
         </div>
         <div class="comparison-table-wrap">
           <table>
-            <!-- Now populated dynamically by JS -->
             <thead id="compare-thead"></thead>
             <tbody id="comparison-table"></tbody>
           </table>
@@ -231,7 +238,6 @@
       </div>
     </div>
 
-    <!-- NEW: Add Custom Store Modal -->
     <div id="add-store-modal" class="price-modal" aria-hidden="true">
       <div class="price-dialog" role="dialog" aria-modal="true">
         <button class="close-modal" data-close-store-add aria-label="Close">×</button>
@@ -243,17 +249,13 @@
     </div>
 
     <script>
-      // DYNAMIC STORES ARCHITECTURE
       const baseStores = ["Megamart", "TF Value-Mart", "Econsave", "Babymall", "AEON", "99 Speed Mart", "Top Opal"];
       const customStores = JSON.parse(localStorage.getItem("basketwise-custom-stores") || "[]");
       const stores = [...baseStores, ...customStores];
-
       const icons = { Baby:"🧸", Groceries:"🥕", Toiletries:"🫧", Household:"🏠" };
       const storeLogos = { "Megamart": "images/Megamart.png", "TF Value-Mart": "images/TF Value-Mart.png", "Econsave": "images/Econsave.png", "Babymall": "images/Babymall.png", "AEON": "images/AEON.png", "99 Speed Mart": "images/99 Speed Mart.png", "Top Opal": "images/Top Opal.png" };
       
-      // Fallback neatly if custom store has no logo image
       const getLogo = store => storeLogos[store] ? `<img src="${storeLogos[store]}" class="store-logo" alt="${store}" onerror="this.style.opacity=0">` : "";
-
       const baseItems = [
         ["Baby", "Drypers", [28.99, 26.99, 25.90, 27.90, null, 28.90, null]],
         ["Baby", "Mimora", [null, null, null, 27.90, null, null, null]],
@@ -345,7 +347,6 @@
         ["Groceries", "Kewpie Mayonnaise", [null, null, null, null, null, null, 11.50]],
         ["Household", "Vanish", [null, null, null, null, 33.90, null, null]]
       ].map(([category,name,priceList,size,unit], id) => ({id,category,name,prices:Object.fromEntries(stores.map((s,i)=>[s,priceList[i] != null ? priceList[i] : null])),size,unit}));
-
       const historicalData = [
         ["Mimora", "Babymall", "2025-07-26", 24.95, 27.90],
         ["Drypers", "TF Value-Mart", "2025-09-28", 27.99, 29.99],
@@ -360,20 +361,26 @@
         ["Balducci Macaroni", "99 Speed Mart", "2025-05-27", 2.85, 2.85],
         ["Cucumber", "Top Opal", "2025-06-02", 5.00, 3.88]
       ];
-
       const customItems = JSON.parse(localStorage.getItem("basketwise-custom-items") || "[]");
       const deletedBaseItems = new Set(JSON.parse(localStorage.getItem("basketwise-deleted-base-items") || "[]"));
       const items = [...baseItems.filter(i => !deletedBaseItems.has(i.id)), ...customItems];
       
-      // Inject missing custom stores into all loaded items so calculations don't break
       items.forEach(item => { stores.forEach(s => { if(item.prices[s] === undefined) item.prices[s] = null; }); });
-
       const priceOverrides = JSON.parse(localStorage.getItem("basketwise-price-overrides") || "{}");
       Object.entries(priceOverrides).forEach(([id, change]) => { const item = items.find(i => i.id == id); if(item && stores.includes(change.store)) item.prices[change.store] = Number(change.price); });
       
       const currency = new Intl.NumberFormat("en-MY", { style:"currency", currency:"MYR", minimumFractionDigits:2 });
-      let activeCategory = "All", activeStoreFilter = "All", activeSearch = "", cart = new Set(JSON.parse(localStorage.getItem("basketwise-cart") || "[]")), quantities = JSON.parse(localStorage.getItem("basketwise-quantities") || "{}"), tripName = localStorage.getItem("basketwise-trip-name") || "", favourites = new Set(JSON.parse(localStorage.getItem("basketwise-favourites") || "[]")), editItemId = null;
+      let activeCategory = "All", activeStoreFilter = "All", activeSearch = "";
+      let cart = new Set(JSON.parse(localStorage.getItem("basketwise-cart") || "[]"));
+      let quantities = JSON.parse(localStorage.getItem("basketwise-quantities") || "{}");
+      let tripName = localStorage.getItem("basketwise-trip-name") || "";
+      let favourites = new Set(JSON.parse(localStorage.getItem("basketwise-favourites") || "[]"));
+      let editItemId = null;
       let sortMode = localStorage.getItem("basketwise-sort") || "store";
+      
+      // NEW: State Management for Item Sorting & History Arrays
+      let itemSortMode = localStorage.getItem("basketwise-item-sort") || "default";
+      let purchaseHistory = JSON.parse(localStorage.getItem("basketwise-purchase-history") || "[]");
 
       const $ = s => document.querySelector(s);
       const best = item => { const values = Object.entries(item.prices).filter(([,p]) => typeof p === 'number'); if (!values.length) return null; const amount = Math.min(...values.map(([,p])=>p)); return { amount, store: values.find(([,p])=>p===amount)[0] }; };
@@ -392,7 +399,6 @@
           if (!groups[baseName]) groups[baseName] = [];
           groups[baseName].push({ id: i.id, up: up });
         });
-        
         const bestDeals = new Set();
         Object.keys(groups).forEach(name => {
           const variants = groups[name];
@@ -404,15 +410,12 @@
         });
         return bestDeals;
       }
-
-      // NEW: DYNAMIC HEADER BUILDERS
       function renderCompareHead() {
         $("#compare-thead").innerHTML = `<tr><th>ITEM</th>${stores.map(s => `<th>${getLogo(s)}${s.toUpperCase()}</th>`).join("")}<th>BEST</th></tr>`;
       }
       function renderStoreSelects() {
         $("#store-filter").innerHTML = `<option value="all">All stores</option>` + stores.map(s => `<option value="${s}">${s}</option>`).join("");
       }
-
       function renderChips(){ 
         const cats=["All","My picks",...new Set(items.map(i=>i.category))]; 
         $("#category-chips").innerHTML=cats.map(c=>`<button class="chip ${c===activeCategory?"active":""}" data-category="${c}">${c}</button>`).join(""); 
@@ -425,6 +428,33 @@
       function renderPlan(){
         const list=filtered();
         const valueWinners = getBestDealMap();
+        
+        // NEW: Core Sorting Execution Engine
+        if (itemSortMode === "alpha-az") {
+          list.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (itemSortMode === "alpha-za") {
+          list.sort((a, b) => b.name.localeCompare(a.name));
+        } else if (itemSortMode === "price-l2h" || itemSortMode === "price-h2l") {
+          const getSortPrice = item => {
+            if (activeStoreFilter !== "All") return item.prices[activeStoreFilter] !== null ? item.prices[activeStoreFilter] : Infinity;
+            const deal = best(item);
+            return deal ? deal.amount : Infinity;
+          };
+          list.sort((a, b) => {
+            const pa = getSortPrice(a), pb = getSortPrice(b);
+            if (itemSortMode === "price-l2h") return pa - pb;
+            if (pa === Infinity) return 1;
+            if (pb === Infinity) return -1;
+            return pb - pa;
+          });
+        } else if (itemSortMode === "recent") {
+          list.sort((a, b) => {
+            let idxA = purchaseHistory.indexOf(a.id);
+            let idxB = purchaseHistory.indexOf(b.id);
+            return (idxA === -1 ? Infinity : idxA) - (idxB === -1 ? Infinity : idxB);
+          });
+        }
+
         $("#plan-list").innerHTML=list.map(i=>{
           const deal=best(i), added=cart.has(i.id), fav=favourites.has(i.id);
           const control=added?`<div class="qty-control browse-qty"><button data-qty="-1" data-item="${i.id}">−</button><strong>${quantity(i)}</strong><button data-qty="1" data-item="${i.id}">+</button></div>`:`<button class="add-button" data-add="${i.id}">+</button>`; 
@@ -448,7 +478,7 @@
         $("#basket-items").textContent=selected.length?`${units} unit${units===1?"":"s"} across ${selected.length} item${selected.length===1?"":"s"}`:"Nothing added yet";
         $("#cart-pill").textContent=units;
         $("#progress-fill").style.width=`${Math.min(100,selected.length/12*100)}%`;
-        $("#progress-items").textContent=`${units} unit${units===1?"":"s"}`;
+        $("#progress-items").textContent=\`${units} unit\${units===1?"":"s"}\`;
         const allStoreTotal=selected.reduce((sum,i)=>sum+Math.max(...Object.values(i.prices).filter(p=>typeof p === 'number'))*quantity(i),0);
         const saved=allStoreTotal-total;
         $("#savings-line").textContent=selected.length?`Your best-price plan saves ${fmt(saved)} against the highest listed total.`:"Add items to build your lowest-price plan.";
@@ -463,7 +493,6 @@
         const valueWinners = getBestDealMap();
         $("#cart-page-total").textContent=fmt(total);
         $("#trip-name").value=tripName;
-
         let groups = {};
         if (sortMode === "store") {
           groups = selected.reduce((o,i)=>{ const d=best(i); (o[d.store] = o[d.store] || []).push(i); return o }, {});
@@ -474,7 +503,6 @@
           $("#cart-subtitle").textContent = selected.length ? `${units} units across ${selected.length} products, grouped by supermarket aisle.` : "Your selected items will appear here, sorted by category.";
           $("#sort-toggle-btn").innerHTML = "🏪 Group by Store";
         }
-
         $("#cart-groups").innerHTML = selected.length ? Object.entries(groups).sort((a,b)=>b[1].length-a[1].length).map(([groupName,groupItems])=>`
           <section class="cart-store">
             <div class="cart-store-head">
@@ -500,7 +528,7 @@
       }
       
       function renderCompare(){const q=$("#compare-search").value.toLowerCase(), store=$("#store-filter").value; const display=items.filter(i=>i.name.toLowerCase().includes(q)&&(store==="all"||i.prices[store]!==null)); $("#comparison-table").innerHTML=display.map(i=>{const deal=best(i); return `<tr><td class="table-item">${i.name}<small>${i.category}${i.size?` · ${i.size}${i.unit}`:""}</small></td>${stores.map(s=>i.prices[s]===null?`<td class="missing-cell">—</td>`:`<td class="${deal&&deal.store===s?"best-cell":""}">${deal&&deal.store===s?`<span>${fmt(i.prices[s])}</span>`:fmt(i.prices[s])}</td>`).join("")}<td class="best-store">${deal?`${getLogo(deal.store)}${deal.store}<br>${fmt(deal.amount)}`:"Needs price"}</td></tr>`}).join("");}
-      function renderValue(){const ranked=items.map(i=>({...i,unitPrice:unitPrice(i)})).filter(i=>i.unitPrice!==null).sort((a,b)=>a.unitPrice-b.unitPrice); $("#value-list").innerHTML=ranked.map((i,index)=>{const d=best(i), label=i.unit==="sachet"?"/ sachet":`/ 100${i.unit}`;return `<article class="value-card"><span class="value-rank">#${String(index+1).padStart(2,"0")} BEST VALUE</span><h3>${i.name}</h3><p>${i.size}${i.unit} · ${getLogo(d.store)}${d.store} · ${fmt(d.amount)}</p><div class="unit-price">RM${i.unitPrice.toFixed(3)} <small>${label}</small></div></article>`}).join("");}
+      function renderValue(){const ranked=items.map(i=>({...i,unitPrice:unitPrice(i)})).filter(i=>i.unitPrice!==null).sort((a,b)=>a.unitPrice-b.unitPrice); $("#value-list").innerHTML=ranked.map((i,index)=>{const d=best(i), label=i.unit==="sachet"?"/ sachet":`/ 100${i.unit}`;return `<article class="value-card"><span class="value-rank">#${String(index+1).padStart(2,"0")} BEST VALUE</span>  <h3>${i.name}</h3><p>${i.size}${i.unit} · ${getLogo(d.store)}${d.store} · ${fmt(d.amount)}</p><div class="unit-price">RM${i.unitPrice.toFixed(3)} <small>${label}</small></div></article>`}).join("");}
       function renderVerify(){const missing=items.filter(i=>!best(i)); $("#verify-list").innerHTML=missing.map(i=>`<article class="verify-card"><button class="verify-check" data-verify="${i.id}"></button><div><h3>${i.name}</h3><p>${i.category} · No price listed at any store</p></div></article>`).join(""); $("#verify-pill").textContent=missing.length;}
       
       function renderTrends() {
@@ -515,21 +543,9 @@
           const color = isUp ? "var(--coral)" : (isDown ? "var(--lime-deep)" : "var(--muted)");
           const symbol = isUp ? "▲" : (isDown ? "▼" : "—");
           const bg = isUp ? "rgba(250, 134, 106, 0.1)" : (isDown ? "rgba(118, 145, 0, 0.1)" : "transparent");
-
-          return `
-            <tr>
-              <td class="table-item">${name}</td>
-              <td class="table-item" style="font-weight: normal;">${getLogo(store)} ${store}</td>
-              <td>${fmt(oldPrice)} <small>${oldDate}</small></td>
-              <td>${fmt(currentPrice)} <small>Current</small></td>
-              <td style="color: ${color}; font-weight: 700; background: ${bg};">
-                ${symbol} ${Math.abs(percentChange)}%
-              </td>
-            </tr>
-          `;
+          return `            <tr>              <td class="table-item">${name}</td>              <td class="table-item" style="font-weight: normal;">${getLogo(store)} ${store}</td>              <td>${fmt(oldPrice)} <small>${oldDate}</small></td>              <td>${fmt(currentPrice)} <small>Current</small></td>              <td style="color: ${color}; font-weight: 700; background: ${bg};">                ${symbol} ${Math.abs(percentChange)}%              </td>            </tr>          `;
         }).join("");
       }
-
       function toast(t){const d=$("#toast");d.textContent=t;d.classList.add("show");setTimeout(()=>d.classList.remove("show"),2000)}
       
       let isDark = localStorage.getItem("basketwise-dark") === "true";
@@ -537,12 +553,11 @@
       $("#theme-toggle").textContent = isDark ? "☀️" : "🌙";
       
       document.addEventListener("DOMContentLoaded", () => {
-        
+        $("#item-sort-select").value = itemSortMode;
         const updateDateDisplay = () => {
           const savedDate = localStorage.getItem("basketwise-last-update");
           if (savedDate) $("#last-update-date").textContent = savedDate;
         };
-
         const setLastUpdateToToday = () => {
           const now = new Date();
           const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -550,7 +565,6 @@
           localStorage.setItem("basketwise-last-update", dateStr);
           updateDateDisplay();
         };
-
         updateDateDisplay();
         renderCompareHead();
         renderStoreSelects();
@@ -569,15 +583,12 @@
             localStorage.setItem("basketwise-sort", sortMode);
             renderCart();
           }
-
-          // OPEN ADD STORE MODAL
           if(e.target.id === "btn-add-store") { 
             $("#add-store-modal").setAttribute("aria-hidden", "false"); 
           }
           if(e.target.closest("[data-close-store-add]")) { 
             $("#add-store-modal").setAttribute("aria-hidden", "true"); 
           }
-
           if(e.target.id === "btn-add-item") { 
             $("#add-store").innerHTML = `<option value="">Select store...</option>` + stores.map(s => `<option value="${s}">${s}</option>`).join(""); 
             $("#add-modal").setAttribute("aria-hidden", "false"); 
@@ -606,9 +617,22 @@
               grandTotal += storeTotal;
             });
             text += `*🧾 Grand Total: ${fmt(grandTotal)}*`;
+            const completeCheckout = () => {
+              // NEW: Unshift checked out item IDs into recent purchase history tracking
+              const currentCartIds = [...cart];
+              let history = JSON.parse(localStorage.getItem("basketwise-purchase-history") || "[]");
+              history = history.filter(id => !currentCartIds.includes(id));
+              history = [...currentCartIds, ...history];
+              localStorage.setItem("basketwise-purchase-history", JSON.stringify(history));
+              purchaseHistory = history;
 
-            const completeCheckout = () => { cart.clear(); quantities = {}; renderPlan(); renderDashboard(); renderCart(); toast("List shared & cart cleared!"); };
-
+              cart.clear(); 
+              quantities = {}; 
+              renderPlan(); 
+              renderDashboard(); 
+              renderCart(); 
+              toast("List shared & cart cleared!"); 
+            };
             if (navigator.share) {
                navigator.share({ title: 'Shopping List', text: text }).then(completeCheckout).catch(console.error);
             } else {
@@ -639,7 +663,13 @@
         
         $("#search").addEventListener("input",e=>{activeSearch=e.target.value;renderPlan()});$("#compare-search").addEventListener("input",renderCompare);$("#store-filter").addEventListener("change",renderCompare);$("#trip-name").addEventListener("input",e=>{tripName=e.target.value;localStorage.setItem("basketwise-trip-name",tripName)});
         
-        // SAVE CUSTOM STORE
+        // NEW: Event Listener handler for sorting dropdown selection changes
+        $("#item-sort-select").addEventListener("change", e => {
+          itemSortMode = e.target.value;
+          localStorage.setItem("basketwise-item-sort", itemSortMode);
+          renderPlan();
+        });
+
         $("#save-new-store").addEventListener("click", () => {
           const name = $("#add-store-name").value.trim();
           if(!name) { toast("Please enter a store name"); return; }
@@ -662,7 +692,6 @@
           renderCompare();
           toast(name + " added successfully!");
         });
-
         $("#save-price").addEventListener("click",()=>{
           const value=Number($("#price-value").value),store=$("#price-store").value;
           if(editItemId===null||!Number.isFinite(value)||value<=0){toast("Enter a valid price first");return}
@@ -679,11 +708,9 @@
           setLastUpdateToToday();
           toast("Your price has updated the plan")
         });
-
         $("#delete-item").addEventListener("click", () => {
           if(editItemId === null) return;
           if(confirm("Are you sure you want to permanently delete this item?")) {
-            
             const customIndex = customItems.findIndex(i => i.id === editItemId);
             if(customIndex > -1) {
               customItems.splice(customIndex, 1);
@@ -692,37 +719,29 @@
               deletedBaseItems.add(editItemId);
               localStorage.setItem("basketwise-deleted-base-items", JSON.stringify([...deletedBaseItems]));
             }
-            
             const itemIndex = items.findIndex(i => i.id === editItemId);
             if(itemIndex > -1) items.splice(itemIndex, 1);
-            
             if(cart.has(editItemId)) { cart.delete(editItemId); delete quantities[editItemId]; }
             if(favourites.has(editItemId)) favourites.delete(editItemId);
-            
             localStorage.setItem("basketwise-cart", JSON.stringify([...cart]));
             localStorage.setItem("basketwise-quantities", JSON.stringify(quantities));
             localStorage.setItem("basketwise-favourites", JSON.stringify([...favourites]));
-            
             $("#price-modal").setAttribute("aria-hidden", "true");
             editItemId = null;
             renderChips(); renderPlan(); renderDashboard(); renderCart(); renderCompare(); renderValue(); renderVerify();
             toast("Item deleted successfully");
           }
         });
-
         $("#save-new-item").addEventListener("click",()=>{
           const name = $("#add-name").value.trim();
           if(!name) { toast("Please enter an item name"); return; }
-          
           const category = $("#add-category").value;
           const sizeInput = $("#add-size").value;
           const size = sizeInput ? Number(sizeInput) : null;
           const unit = $("#add-unit").value || null;
-          
           const store = $("#add-store").value;
           const priceInput = $("#add-price").value;
           const price = priceInput ? Number(priceInput) : null;
-          
           const newItem = {
             id: Date.now(),
             category: category,
@@ -731,21 +750,17 @@
             size: size,
             unit: unit
           };
-          
           if (store && price !== null && price > 0) {
             newItem.prices[store] = price;
             setLastUpdateToToday();
           }
-          
           customItems.push(newItem);
           items.push(newItem);
           localStorage.setItem("basketwise-custom-items", JSON.stringify(customItems));
-          
           $("#add-modal").setAttribute("aria-hidden", "true");
           $("#add-name").value = "";
           $("#add-size").value = "";
           $("#add-price").value = ""; 
-          
           renderChips(); renderPlan(); renderVerify(); renderCompare(); renderValue();
           toast("New item added to your list!");
         });
