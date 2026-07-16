@@ -67,7 +67,7 @@
 
       <section class="hero" id="top">
         <div>
-          <p class="eyebrow">I WANT TOY</p>
+          <p class="eyebrow">I WANT TOY </p>
           <h1>Lets Go Shopping. <em>With Nuh!</em></h1>
           <p class="hero-copy">Lets go buy TOY baba.</p>
         </div>
@@ -254,9 +254,10 @@
       const customStores = JSON.parse(localStorage.getItem("basketwise-custom-stores") || "[]");
       const stores = [...baseStores, ...customStores];
       const icons = { Baby:"🧸", Groceries:"🥕", Toiletries:"🫧", Household:"🏠" };
-      const storeLogos = { "Megamart": "images/Megamart.png", "TF Value-Mart": "images/TF Value-Mart.png", "Econsave": "images/Econsave.png", "Babymall": "images/Babymall.png", "AEON": "images/AEON.png", "99 Speed Mart": "images/99 Speed Mart.png", "Top Opal": "images/Top Opal.png" };
       
-      const getLogo = store => storeLogos[store] ? `<img src="${storeLogos[store]}" class="store-logo" alt="${store}" onerror="this.style.opacity=0">` : "";
+      // DYNAMIC LOGO ENGINE: Automatically loads image based on store name
+      const getLogo = store => `<img src="images/${store}.png" class="store-logo" alt="" onerror="this.style.display='none'; this.onerror=null;">`;
+      
       const baseItems = [
         ["Baby", "Drypers", [28.99, 26.99, 25.90, 27.90, null, 28.90, null]],
         ["Baby", "Mimora", [null, null, null, 27.90, null, null, null]],
@@ -420,7 +421,13 @@
         const cats=["All","My picks",...new Set(items.map(i=>i.category))]; 
         $("#category-chips").innerHTML=cats.map(c=>`<button class="chip ${c===activeCategory?"active":""}" data-category="${c}">${c}</button>`).join(""); 
         const storeChipList=["All",...stores];
-        $("#store-chips").innerHTML=storeChipList.map(s=>`<button class="chip ${s===activeStoreFilter?"active":""}" data-store-filter="${s}" title="${s}" style="display:flex; align-items:center; justify-content:center; padding: 0 12px; height: 26px;">${s==="All" ? "All" : storeLogos[s] ? `<img src="${storeLogos[s]}" alt="${s}" style="width:16px; height:16px; border-radius:3px; object-fit:cover;" onerror="this.style.opacity=0">` : s}</button>`).join("");
+        $("#store-chips").innerHTML=storeChipList.map(s=>{
+          if(s==="All") return `<button class="chip ${s===activeStoreFilter?"active":""}" data-store-filter="All">All</button>`;
+          return `<button class="chip ${s===activeStoreFilter?"active":""}" data-store-filter="${s}" title="${s}" style="display:flex; align-items:center; justify-content:center; padding: 0 12px; height: 26px; gap: 4px;">
+            <img src="images/${s}.png" alt="${s}" style="width:16px; height:16px; border-radius:3px; object-fit:cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+            <span style="display:none; font-weight:600; font-size:11px;">${s}</span>
+          </button>`;
+        }).join("");
       }
       
       function filtered(){ return items.filter(i=>(activeCategory==="All"||activeCategory==="My picks"&&favourites.has(i.id)||i.category===activeCategory) && (activeStoreFilter==="All"||i.prices[activeStoreFilter]!==null) && i.name.toLowerCase().includes(activeSearch.toLowerCase())); }
