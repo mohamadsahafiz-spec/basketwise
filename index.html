@@ -70,7 +70,8 @@
           <p class="hero-copy">Every price from your town, turned into one calm, smart plan.</p>
         </div>
         <div class="hero-art" aria-hidden="true">
-          <img src="images/hero-photo.jpg" style="width: 220px; height: 220px; border-radius: 24px; object-fit: cover; transform: rotate(3deg); box-shadow: 0 15px 35px rgba(0,0,0,0.3);" alt="My Hero Image" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'220\' height=\'220\' viewBox=\'0 0 220 220\'><rect width=\'220\' height=\'220\' fill=\'%23d8f15b\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'60\'>🥬</text></svg>'" />
+          <!-- STRENGTHENED: added 'this.onerror=null' to explicitly stop infinite crash loops -->
+          <img src="images/hero-photo.jpg" style="width: 220px; height: 220px; border-radius: 24px; object-fit: cover; transform: rotate(3deg); box-shadow: 0 15px 35px rgba(0,0,0,0.3);" alt="My Hero Image" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'220\' height=\'220\' viewBox=\'0 0 220 220\'><rect width=\'220\' height=\'220\' fill=\'%23d8f15b\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'60\'>🥬</text></svg>'" />
         </div>
       </section>
 
@@ -369,14 +370,12 @@
       const quantity = item => quantities[item.id] || 1;
       function imageFor(item){ const safeName = item.name.replace(/[\/\\]/g, '-'); return `images/${safeName}.jpg`; }
       
-      // NEW: Intelligent auto-calculation mapping engine to identify the actual value winner among size groups
       function getBestDealMap() {
         const groups = {};
         items.forEach(i => {
           if (!i.size) return;
           const up = unitPrice(i);
           if (up === null) return;
-          // Normalized base name filter to align size variants perfectly
           const baseName = i.name.replace(/\s*\d+\s*(g|ml|s|sachet|pcs|kg)?.*$/i, '').trim();
           if (!groups[baseName]) groups[baseName] = [];
           groups[baseName].push({ id: i.id, up: up });
@@ -416,7 +415,6 @@
             if (deal && deal.store !== activeStoreFilter) { let diff = (i.prices[activeStoreFilter] - deal.amount).toFixed(2); subDisplay = `<small style="color:var(--coral); font-weight:700;">+RM${diff} vs Best (${deal.store})</small>`; } 
             else if (deal && deal.store === activeStoreFilter) { subDisplay = `<small style="color:var(--lime-deep); font-weight:700;">⭐ Best Price</small>`; }
           }
-          // Highlight layout injection
           const valueBadge = valueWinners.has(i.id) ? `<span style="font:700 8px 'DM Mono'; background:var(--lime); color:#183c3a; padding:2px 5px; border-radius:4px; margin-left:6px; vertical-align:middle; display:inline-block;">🏆 BEST VALUE CHOICE</span>` : '';
           return `<article class="item-card ${added?"selected":""}"><img class="item-photo" src="${imageFor(i)}" onerror="this.style.opacity=0" alt="" loading="lazy" /><div class="item-info"><h3 title="${i.name}">${i.name}</h3><p>${i.category}${i.size?` · ${i.size}${i.unit}`:""}${valueBadge}</p></div><div class="price-actions"><div class="price">${priceDisplay}${subDisplay}</div><button class="edit-price" data-edit-price="${i.id}">Edit price</button></div><button class="favorite-button ${fav?"is-favorite":""}" data-favorite="${i.id}">${fav?"♥":"♡"}</button>${control}</article>`
         }).join("") || `<p class="empty" style="grid-column: 1/-1; padding: 20px; text-align: center; color: var(--muted);">Nothing found here.</p>`;
@@ -483,7 +481,7 @@
       
       function renderCompare(){const q=$("#compare-search").value.toLowerCase(), store=$("#store-filter").value; const display=items.filter(i=>i.name.toLowerCase().includes(q)&&(store==="all"||i.prices[store]!==null)); $("#comparison-table").innerHTML=display.map(i=>{const deal=best(i); return `<tr><td class="table-item">${i.name}<small>${i.category}${i.size?` · ${i.size}${i.unit}`:""}</small></td>${stores.map(s=>i.prices[s]===null?`<td class="missing-cell">—</td>`:`<td class="${deal.store===s?"best-cell":""}">${deal.store===s?`<span>${fmt(i.prices[s])}</span>`:fmt(i.prices[s])}</td>`).join("")}<td class="best-store">${deal?`${getLogo(deal.store)}${deal.store}<br>${fmt(deal.amount)}`:"Needs price"}</td></tr>`}).join("");}
       function renderValue(){const ranked=items.map(i=>({...i,unitPrice:unitPrice(i)})).filter(i=>i.unitPrice!==null).sort((a,b)=>a.unitPrice-b.unitPrice); $("#value-list").innerHTML=ranked.map((i,index)=>{const d=best(i), label=i.unit==="sachet"?"/ sachet":`/ 100${i.unit}`;return `<article class="value-card"><span class="value-rank">#${String(index+1).padStart(2,"0")} BEST VALUE</span><h3>${i.name}</h3><p>${i.size}${i.unit} · ${getLogo(d.store)}${d.store} · ${fmt(d.amount)}</p><div class="unit-price">RM${i.unitPrice.toFixed(3)} <small>${label}</small></div></article>`}).join("");}
-      function renderVerify(){const missing=items.filter(i=>!best(i)); $("#verify-list").innerHTML=missing.map(i=>`<article class="verify-card"><button class="verify-check" data-verify="${i.id}"></button><div><h3>${i.name}</h3><p>${i.category} · No price listed at any store</p></div></article>`}).join(""); $("#verify-pill").textContent=missing.length;}
+      function renderVerify(){const missing=items.filter(i=>!best(i)); $("#verify-list").innerHTML=missing.map(i=>`<article class="verify-card"><button class="verify-check" data-verify="${i.id}"></button><div><h3>${i.name}</h3><p>${i.category} · No price listed at any store</p></div></article>`).join(""); $("#verify-pill").textContent=missing.length;}
       
       function renderTrends() {
         const tbody = $("#trends-table");
@@ -520,13 +518,11 @@
       
       document.addEventListener("DOMContentLoaded", () => {
         
-        // Helper to display the saved update date
         const updateDateDisplay = () => {
           const savedDate = localStorage.getItem("basketwise-last-update");
           if (savedDate) $("#last-update-date").textContent = savedDate;
         };
 
-        // Helper to stamp today's date into memory
         const setLastUpdateToToday = () => {
           const now = new Date();
           const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
