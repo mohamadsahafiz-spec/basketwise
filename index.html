@@ -561,15 +561,31 @@
         const tbody = $("#trends-table");
         if (!tbody) return;
         tbody.innerHTML = historicalData.map(record => {
-          const [name, store, oldDate, oldPrice, currentPrice] = record;
-          const diff = currentPrice - oldPrice;
+          const [name, store, oldDate, oldPrice, fallbackCurrentPrice] = record;
+          
+          // NEW: Search the live database for the actual current price!
+          const liveItem = items.find(i => i.name === name);
+          const livePrice = (liveItem && liveItem.prices[store] !== null) ? liveItem.prices[store] : fallbackCurrentPrice;
+
+          const diff = livePrice - oldPrice;
           const percentChange = ((diff / oldPrice) * 100).toFixed(1);
           const isUp = diff > 0;
           const isDown = diff < 0;
           const color = isUp ? "var(--coral)" : (isDown ? "var(--lime-deep)" : "var(--muted)");
           const symbol = isUp ? "▲" : (isDown ? "▼" : "—");
           const bg = isUp ? "rgba(250, 134, 106, 0.1)" : (isDown ? "rgba(118, 145, 0, 0.1)" : "transparent");
-          return `            <tr>              <td class="table-item">${name}</td>              <td class="table-item" style="font-weight: normal;">${getLogo(store)} ${store}</td>              <td>${fmt(oldPrice)} <small>${oldDate}</small></td>              <td>${fmt(currentPrice)} <small>Current</small></td>              <td style="color: ${color}; font-weight: 700; background: ${bg};">                ${symbol} ${Math.abs(percentChange)}%              </td>            </tr>          `;
+          
+          return `
+            <tr>
+              <td class="table-item">${name}</td>
+              <td class="table-item" style="font-weight: normal;">${getLogo(store)} ${store}</td>
+              <td>${fmt(oldPrice)} <small>${oldDate}</small></td>
+              <td>${fmt(livePrice)} <small>Current</small></td>
+              <td style="color: ${color}; font-weight: 700; background: ${bg};">
+                ${symbol} ${Math.abs(percentChange)}%
+              </td>
+            </tr>
+          `;
         }).join("");
       }
       function toast(t){const d=$("#toast");d.textContent=t;d.classList.add("show");setTimeout(()=>d.classList.remove("show"),2000)}
