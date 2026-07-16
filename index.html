@@ -122,7 +122,9 @@
           
           <div class="controls">
             <label class="search" style="flex:1;"><span>⌕</span><input id="search" placeholder="Search groceries, baby care..." /></label>
-            <button id="btn-add-item" class="btn-secondary" style="white-space:nowrap; padding: 0 16px;">+ New</button>
+            <!-- NEW: Add Store Button -->
+            <button id="btn-add-store" class="btn-secondary" style="white-space:nowrap; padding: 0 16px; margin-right: 6px;">+ Store</button>
+            <button id="btn-add-item" class="btn-secondary" style="white-space:nowrap; padding: 0 16px;">+ Item</button>
           </div>
           
           <p style="font: 600 10px 'DM Mono'; color: var(--muted); margin: 0 0 8px; letter-spacing: 0.5px;">CATEGORY</p>
@@ -139,25 +141,13 @@
         <div class="section-head compare-head"><div><p class="eyebrow">PRICE TRACKER</p><h2>Price comparison</h2><p>We highlight the best price, so the choice is obvious.</p></div><div class="legend"><span><i class="legend-dot best"></i> Best price</span><span><i class="legend-dot missing"></i> Not listed</span></div></div>
         <div class="compare-toolbar">
           <label class="search"><span>⌕</span><input id="compare-search" placeholder="Find an item" /></label>
-          <select id="store-filter">
-            <option value="all">All stores</option><option>Megamart</option><option>TF Value-Mart</option><option>Econsave</option><option>Babymall</option><option>AEON</option><option>99 Speed Mart</option><option>Top Opal</option>
-          </select>
+          <!-- Now populated dynamically by JS -->
+          <select id="store-filter"></select>
         </div>
         <div class="comparison-table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>ITEM</th>
-                <th><img src="images/Megamart.png" class="store-logo" onerror="this.style.opacity=0">MEGAMART</th>
-                <th><img src="images/TF Value-Mart.png" class="store-logo" onerror="this.style.opacity=0">TF VALUE-MART</th>
-                <th><img src="images/Econsave.png" class="store-logo" onerror="this.style.opacity=0">ECONSAVE</th>
-                <th><img src="images/Babymall.png" class="store-logo" onerror="this.style.opacity=0">BABYMALL</th>
-                <th><img src="images/AEON.png" class="store-logo" onerror="this.style.opacity=0">AEON</th>
-                <th><img src="images/99 Speed Mart.png" class="store-logo" onerror="this.style.opacity=0">99 SPEED MART</th>
-                <th><img src="images/Top Opal.png" class="store-logo" onerror="this.style.opacity=0">TOP OPAL</th>
-                <th>BEST</th>
-              </tr>
-            </thead>
+            <!-- Now populated dynamically by JS -->
+            <thead id="compare-thead"></thead>
             <tbody id="comparison-table"></tbody>
           </table>
         </div>
@@ -241,10 +231,27 @@
       </div>
     </div>
 
+    <!-- NEW: Add Custom Store Modal -->
+    <div id="add-store-modal" class="price-modal" aria-hidden="true">
+      <div class="price-dialog" role="dialog" aria-modal="true">
+        <button class="close-modal" data-close-store-add aria-label="Close">×</button>
+        <p class="eyebrow">NEW SUPERMARKET</p><h2>Add custom store</h2>
+        <p style="color:var(--muted); font-size:12px; margin-top:8px;">Add a new local market or specialty store to track prices.</p>
+        <label>Store Name<input id="add-store-name" type="text" placeholder="e.g. Lotus's" /></label>
+        <button id="save-new-store" class="save-price" style="margin-top:16px;">Save new store</button>
+      </div>
+    </div>
+
     <script>
-      const stores = ["Megamart", "TF Value-Mart", "Econsave", "Babymall", "AEON", "99 Speed Mart", "Top Opal"];
+      // DYNAMIC STORES ARCHITECTURE
+      const baseStores = ["Megamart", "TF Value-Mart", "Econsave", "Babymall", "AEON", "99 Speed Mart", "Top Opal"];
+      const customStores = JSON.parse(localStorage.getItem("basketwise-custom-stores") || "[]");
+      const stores = [...baseStores, ...customStores];
+
       const icons = { Baby:"🧸", Groceries:"🥕", Toiletries:"🫧", Household:"🏠" };
       const storeLogos = { "Megamart": "images/Megamart.png", "TF Value-Mart": "images/TF Value-Mart.png", "Econsave": "images/Econsave.png", "Babymall": "images/Babymall.png", "AEON": "images/AEON.png", "99 Speed Mart": "images/99 Speed Mart.png", "Top Opal": "images/Top Opal.png" };
+      
+      // Fallback neatly if custom store has no logo image
       const getLogo = store => storeLogos[store] ? `<img src="${storeLogos[store]}" class="store-logo" alt="${store}" onerror="this.style.opacity=0">` : "";
 
       const baseItems = [
@@ -357,6 +364,10 @@
       const customItems = JSON.parse(localStorage.getItem("basketwise-custom-items") || "[]");
       const deletedBaseItems = new Set(JSON.parse(localStorage.getItem("basketwise-deleted-base-items") || "[]"));
       const items = [...baseItems.filter(i => !deletedBaseItems.has(i.id)), ...customItems];
+      
+      // Inject missing custom stores into all loaded items so calculations don't break
+      items.forEach(item => { stores.forEach(s => { if(item.prices[s] === undefined) item.prices[s] = null; }); });
+
       const priceOverrides = JSON.parse(localStorage.getItem("basketwise-price-overrides") || "{}");
       Object.entries(priceOverrides).forEach(([id, change]) => { const item = items.find(i => i.id == id); if(item && stores.includes(change.store)) item.prices[change.store] = Number(change.price); });
       
@@ -392,6 +403,14 @@
           }
         });
         return bestDeals;
+      }
+
+      // NEW: DYNAMIC HEADER BUILDERS
+      function renderCompareHead() {
+        $("#compare-thead").innerHTML = `<tr><th>ITEM</th>${stores.map(s => `<th>${getLogo(s)}${s.toUpperCase()}</th>`).join("")}<th>BEST</th></tr>`;
+      }
+      function renderStoreSelects() {
+        $("#store-filter").innerHTML = `<option value="all">All stores</option>` + stores.map(s => `<option value="${s}">${s}</option>`).join("");
       }
 
       function renderChips(){ 
@@ -480,7 +499,7 @@
         `).join("") : `<div class="cart-empty"><strong>Your cart is ready when you are.</strong>Browse the list and add the things you need.<br><button data-browse>Browse items</button></div>`;
       }
       
-      function renderCompare(){const q=$("#compare-search").value.toLowerCase(), store=$("#store-filter").value; const display=items.filter(i=>i.name.toLowerCase().includes(q)&&(store==="all"||i.prices[store]!==null)); $("#comparison-table").innerHTML=display.map(i=>{const deal=best(i); return `<tr><td class="table-item">${i.name}<small>${i.category}${i.size?` · ${i.size}${i.unit}`:""}</small></td>${stores.map(s=>i.prices[s]===null?`<td class="missing-cell">—</td>`:`<td class="${deal.store===s?"best-cell":""}">${deal.store===s?`<span>${fmt(i.prices[s])}</span>`:fmt(i.prices[s])}</td>`).join("")}<td class="best-store">${deal?`${getLogo(deal.store)}${deal.store}<br>${fmt(deal.amount)}`:"Needs price"}</td></tr>`}).join("");}
+      function renderCompare(){const q=$("#compare-search").value.toLowerCase(), store=$("#store-filter").value; const display=items.filter(i=>i.name.toLowerCase().includes(q)&&(store==="all"||i.prices[store]!==null)); $("#comparison-table").innerHTML=display.map(i=>{const deal=best(i); return `<tr><td class="table-item">${i.name}<small>${i.category}${i.size?` · ${i.size}${i.unit}`:""}</small></td>${stores.map(s=>i.prices[s]===null?`<td class="missing-cell">—</td>`:`<td class="${deal&&deal.store===s?"best-cell":""}">${deal&&deal.store===s?`<span>${fmt(i.prices[s])}</span>`:fmt(i.prices[s])}</td>`).join("")}<td class="best-store">${deal?`${getLogo(deal.store)}${deal.store}<br>${fmt(deal.amount)}`:"Needs price"}</td></tr>`}).join("");}
       function renderValue(){const ranked=items.map(i=>({...i,unitPrice:unitPrice(i)})).filter(i=>i.unitPrice!==null).sort((a,b)=>a.unitPrice-b.unitPrice); $("#value-list").innerHTML=ranked.map((i,index)=>{const d=best(i), label=i.unit==="sachet"?"/ sachet":`/ 100${i.unit}`;return `<article class="value-card"><span class="value-rank">#${String(index+1).padStart(2,"0")} BEST VALUE</span><h3>${i.name}</h3><p>${i.size}${i.unit} · ${getLogo(d.store)}${d.store} · ${fmt(d.amount)}</p><div class="unit-price">RM${i.unitPrice.toFixed(3)} <small>${label}</small></div></article>`}).join("");}
       function renderVerify(){const missing=items.filter(i=>!best(i)); $("#verify-list").innerHTML=missing.map(i=>`<article class="verify-card"><button class="verify-check" data-verify="${i.id}"></button><div><h3>${i.name}</h3><p>${i.category} · No price listed at any store</p></div></article>`).join(""); $("#verify-pill").textContent=missing.length;}
       
@@ -533,6 +552,8 @@
         };
 
         updateDateDisplay();
+        renderCompareHead();
+        renderStoreSelects();
         renderChips();renderPlan();renderDashboard();renderCart();renderCompare();renderValue();renderVerify();renderTrends();
         
         document.addEventListener("click",e=>{
@@ -547,6 +568,14 @@
             sortMode = sortMode === "store" ? "category" : "store";
             localStorage.setItem("basketwise-sort", sortMode);
             renderCart();
+          }
+
+          // OPEN ADD STORE MODAL
+          if(e.target.id === "btn-add-store") { 
+            $("#add-store-modal").setAttribute("aria-hidden", "false"); 
+          }
+          if(e.target.closest("[data-close-store-add]")) { 
+            $("#add-store-modal").setAttribute("aria-hidden", "true"); 
           }
 
           if(e.target.id === "btn-add-item") { 
@@ -610,6 +639,30 @@
         
         $("#search").addEventListener("input",e=>{activeSearch=e.target.value;renderPlan()});$("#compare-search").addEventListener("input",renderCompare);$("#store-filter").addEventListener("change",renderCompare);$("#trip-name").addEventListener("input",e=>{tripName=e.target.value;localStorage.setItem("basketwise-trip-name",tripName)});
         
+        // SAVE CUSTOM STORE
+        $("#save-new-store").addEventListener("click", () => {
+          const name = $("#add-store-name").value.trim();
+          if(!name) { toast("Please enter a store name"); return; }
+          if(stores.includes(name)) { toast("This store is already on your list!"); return; }
+          
+          customStores.push(name);
+          stores.push(name);
+          localStorage.setItem("basketwise-custom-stores", JSON.stringify(customStores));
+          
+          items.forEach(i => i.prices[name] = null);
+          localStorage.setItem("basketwise-custom-items", JSON.stringify(customItems));
+          
+          $("#add-store-modal").setAttribute("aria-hidden", "true");
+          $("#add-store-name").value = "";
+          
+          renderCompareHead();
+          renderStoreSelects();
+          renderChips();
+          renderPlan();
+          renderCompare();
+          toast(name + " added successfully!");
+        });
+
         $("#save-price").addEventListener("click",()=>{
           const value=Number($("#price-value").value),store=$("#price-store").value;
           if(editItemId===null||!Number.isFinite(value)||value<=0){toast("Enter a valid price first");return}
