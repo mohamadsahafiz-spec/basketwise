@@ -594,6 +594,9 @@
         }).filter(i => i !== null).sort((a, b) => b.count - a.count);
 
         tbody.innerHTML = talliedItems.length ? talliedItems.map((i, index) => {
+          const deal = best(i);
+          const totalSpent = deal ? fmt(deal.amount * i.count) : "—";
+
           return `<article class="value-card" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 24px 15px; position:relative; overflow:hidden;">
             ${index === 0 ? `<div style="position:absolute; top:-10px; right:-10px; background:var(--lime); width:45px; height:45px; border-radius:50%; display:grid; place-items:center; font-size:18px; padding-top:8px; padding-left:8px;">👑</div>` : ''}
             ${index === 1 ? `<div style="position:absolute; top:-10px; right:-10px; background:#e2e8f0; width:45px; height:45px; border-radius:50%; display:grid; place-items:center; font-size:16px; padding-top:8px; padding-left:8px;">🥈</div>` : ''}
@@ -601,9 +604,15 @@
             <img src="${imageFor(i)}" onerror="this.style.opacity=0" style="width:70px; height:70px; border-radius:16px; margin-bottom:14px; object-fit:cover; background:#edf1e0; box-shadow: 0 4px 12px rgba(0,0,0,0.05);" />
             <h3 style="margin:0 0 6px; font-size:14px; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:34px;">${i.name}</h3>
             <p style="margin:0 0 16px; font-size:10px; color:var(--muted); font-family:'DM Mono'; text-transform:uppercase;">${i.category}</p>
-            <div style="background:var(--ink); color:var(--cream); padding:10px; border-radius:12px; width:100%; border: 1px solid var(--line);">
-              <strong style="font:700 24px Fraunces; color:var(--lime);">${i.count}</strong>
-              <span style="display:block; font:600 9px 'DM Mono'; margin-top:2px; opacity:0.8; letter-spacing:0.5px;">UNITS BOUGHT</span>
+            <div style="background:var(--ink); color:var(--cream); padding:10px 14px; border-radius:12px; width:100%; border: 1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+              <div style="text-align:left;">
+                <strong style="font:700 20px Fraunces; color:var(--lime);">${i.count}</strong>
+                <span style="display:block; font:600 9px 'DM Mono'; margin-top:2px; opacity:0.8; letter-spacing:0.5px;">UNITS</span>
+              </div>
+              <div style="text-align:right;">
+                <strong style="font:700 16px Fraunces; color:var(--lime);">${totalSpent}</strong>
+                <span style="display:block; font:600 9px 'DM Mono'; margin-top:2px; opacity:0.8; letter-spacing:0.5px;">SPENT</span>
+              </div>
             </div>
           </article>`;
         }).join("") : `<div class="cart-empty" style="grid-column:1/-1;"><strong>No shopping history yet.</strong><br>Finish a trip to start climbing the leaderboard!</div>`;
@@ -668,7 +677,6 @@
             let text = `🛒 *Basketwise Shopping List*\n${tripName ? `Trip: ${tripName}\n` : ""}\n`;
             let grandTotal = 0;
             
-            // Add items to lifetime tally
             let tallies = JSON.parse(localStorage.getItem("basketwise-item-tallies") || "{}");
 
             Object.entries(groups).forEach(([store, groupItems]) => {
@@ -679,7 +687,6 @@
                 storeTotal += p * q;
                 text += `- ${i.name} (${fmt(p)} x ${q})\n`;
                 
-                // Tally increment
                 tallies[i.id] = (tallies[i.id] || 0) + q;
               });
               text += `_Store total: ${fmt(storeTotal)}_\n\n`;
@@ -687,7 +694,6 @@
             });
             text += `*🧾 Grand Total: ${fmt(grandTotal)}*`;
             
-            // Save tallies back to memory
             localStorage.setItem("basketwise-item-tallies", JSON.stringify(tallies));
 
             const completeCheckout = () => {
@@ -841,7 +847,7 @@
           }
           
           $("#price-modal").setAttribute("aria-hidden","true");
-          renderPlan();renderDashboard();renderCart();renderCompare();renderValue();renderTrends();
+          renderPlan();renderDashboard();renderCart();renderCompare();renderValue();renderTrends();renderCounter();
           setLastUpdateToToday();
           toast("Your price has updated the plan")
         });
