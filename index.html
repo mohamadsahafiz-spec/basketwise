@@ -72,7 +72,7 @@
           <p class="hero-copy">Lets go buy TOY baba.</p>
         </div>
         <div class="hero-art" aria-hidden="true">
-          <img src="nuh_omel.png" style="width: 100%; max-width: 220px; aspect-ratio: 1/1; border-radius: 24px; object-fit: cover; transform: rotate(9deg); box-shadow: 0 15px 35px rgba(0,0,0,0.3);" alt="My Hero Image" onerror="this.style.opacity=0" />
+          <img src="nuh_photo.png" style="width: 100%; max-width: 220px; aspect-ratio: 1/1; border-radius: 24px; object-fit: cover; transform: rotate(9deg); box-shadow: 0 15px 35px rgba(0,0,0,0.3);" alt="My Hero Image" onerror="this.style.opacity=0" />
         </div>
       </section>
 
@@ -83,6 +83,7 @@
         <button class="tab" data-view="value">Best value</button>
         <button class="tab" data-view="verify">To verify <span id="verify-pill">4</span></button>
         <button class="tab" data-view="trends">Price Trends 📈</button>
+        <button class="tab" data-view="counter">Counter 📊</button>
       </nav>
 
       <section id="cart-view" class="view active">
@@ -189,6 +190,18 @@
             <tbody id="trends-table"></tbody>
           </table>
         </div>
+      </section>
+
+      <section id="counter-view" class="view">
+        <div class="value-hero" style="background:#e8f0eb;">
+          <div>
+            <p class="eyebrow">LIFETIME STATS</p>
+            <h2>Purchase Counter</h2>
+            <p>Track your all-time favorite groceries. See what hits your cart the most.</p>
+          </div>
+          <div class="trophy" style="background:var(--lime-deep); font-size:32px;">🛒</div>
+        </div>
+        <div id="counter-list" class="value-list"></div>
       </section>
 
       <div style="text-align:center; margin-top: 50px; font-size: 12px; color: var(--muted);">
@@ -532,7 +545,6 @@
             </div>
             ${groupItems.map(i=>`
               <div class="cart-line">
-                <!-- UPDATED: Display actual product images here instead of generic group placeholders -->
                 <img class="item-photo" src="${imageFor(i)}" onerror="this.style.opacity=0" alt="" loading="lazy" />
                 <div class="cart-line-info">
                   <h4>${i.name}</h4>
@@ -570,6 +582,33 @@
           return `            <tr>              <td class="table-item">${name}</td>              <td class="table-item" style="font-weight: normal;">${getLogo(store)} ${store}</td>              <td>${fmt(oldPrice)} <small>${oldDate}</small></td>              <td>${fmt(livePrice)} <small>Current</small></td>              <td style="color: ${color}; font-weight: 700; background: ${bg};">                ${symbol} ${Math.abs(percentChange)}%              </td>            </tr>          `;
         }).join("");
       }
+
+      function renderCounter() {
+        const tbody = $("#counter-list");
+        if (!tbody) return;
+        
+        let tallies = JSON.parse(localStorage.getItem("basketwise-item-tallies") || "{}");
+        let talliedItems = Object.keys(tallies).map(id => {
+          let item = items.find(i => i.id == parseInt(id));
+          return item ? { ...item, count: tallies[id] } : null;
+        }).filter(i => i !== null).sort((a, b) => b.count - a.count);
+
+        tbody.innerHTML = talliedItems.length ? talliedItems.map((i, index) => {
+          return `<article class="value-card" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 24px 15px; position:relative; overflow:hidden;">
+            ${index === 0 ? `<div style="position:absolute; top:-10px; right:-10px; background:var(--lime); width:45px; height:45px; border-radius:50%; display:grid; place-items:center; font-size:18px; padding-top:8px; padding-left:8px;">👑</div>` : ''}
+            ${index === 1 ? `<div style="position:absolute; top:-10px; right:-10px; background:#e2e8f0; width:45px; height:45px; border-radius:50%; display:grid; place-items:center; font-size:16px; padding-top:8px; padding-left:8px;">🥈</div>` : ''}
+            ${index === 2 ? `<div style="position:absolute; top:-10px; right:-10px; background:#fcd34d; width:45px; height:45px; border-radius:50%; display:grid; place-items:center; font-size:16px; padding-top:8px; padding-left:8px;">🥉</div>` : ''}
+            <img src="${imageFor(i)}" onerror="this.style.opacity=0" style="width:70px; height:70px; border-radius:16px; margin-bottom:14px; object-fit:cover; background:#edf1e0; box-shadow: 0 4px 12px rgba(0,0,0,0.05);" />
+            <h3 style="margin:0 0 6px; font-size:14px; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:34px;">${i.name}</h3>
+            <p style="margin:0 0 16px; font-size:10px; color:var(--muted); font-family:'DM Mono'; text-transform:uppercase;">${i.category}</p>
+            <div style="background:var(--ink); color:var(--cream); padding:10px; border-radius:12px; width:100%; border: 1px solid var(--line);">
+              <strong style="font:700 24px Fraunces; color:var(--lime);">${i.count}</strong>
+              <span style="display:block; font:600 9px 'DM Mono'; margin-top:2px; opacity:0.8; letter-spacing:0.5px;">UNITS BOUGHT</span>
+            </div>
+          </article>`;
+        }).join("") : `<div class="cart-empty" style="grid-column:1/-1;"><strong>No shopping history yet.</strong><br>Finish a trip to start climbing the leaderboard!</div>`;
+      }
+
       function toast(t){const d=$("#toast");d.textContent=t;d.classList.add("show");setTimeout(()=>d.classList.remove("show"),2000)}
       
       let isDark = localStorage.getItem("basketwise-dark") === "true";
@@ -592,7 +631,7 @@
         updateDateDisplay();
         renderCompareHead();
         renderStoreSelects();
-        renderChips();renderPlan();renderDashboard();renderCart();renderCompare();renderValue();renderVerify();renderTrends();
+        renderChips();renderPlan();renderDashboard();renderCart();renderCompare();renderValue();renderVerify();renderTrends();renderCounter();
         
         document.addEventListener("click",e=>{
           if(e.target.id === "theme-toggle") {
@@ -629,6 +668,9 @@
             let text = `🛒 *Basketwise Shopping List*\n${tripName ? `Trip: ${tripName}\n` : ""}\n`;
             let grandTotal = 0;
             
+            // Add items to lifetime tally
+            let tallies = JSON.parse(localStorage.getItem("basketwise-item-tallies") || "{}");
+
             Object.entries(groups).forEach(([store, groupItems]) => {
               text += `*🛍️ ${store}*\n`;
               let storeTotal = 0;
@@ -636,11 +678,18 @@
                 const p = best(i).amount; const q = quantity(i);
                 storeTotal += p * q;
                 text += `- ${i.name} (${fmt(p)} x ${q})\n`;
+                
+                // Tally increment
+                tallies[i.id] = (tallies[i.id] || 0) + q;
               });
               text += `_Store total: ${fmt(storeTotal)}_\n\n`;
               grandTotal += storeTotal;
             });
             text += `*🧾 Grand Total: ${fmt(grandTotal)}*`;
+            
+            // Save tallies back to memory
+            localStorage.setItem("basketwise-item-tallies", JSON.stringify(tallies));
+
             const completeCheckout = () => {
               const currentCartIds = [...cart];
               let history = JSON.parse(localStorage.getItem("basketwise-purchase-history") || "[]");
@@ -653,7 +702,8 @@
               quantities = {}; 
               renderPlan(); 
               renderDashboard(); 
-              renderCart(); 
+              renderCart();
+              renderCounter(); 
               toast("List shared & cart cleared!"); 
             };
             if (navigator.share) {
@@ -679,7 +729,7 @@
           if(e.target.closest("[data-close-price]")){ $("#price-modal").setAttribute("aria-hidden","true");editItemId=null }
           const chip=e.target.closest("[data-category]");if(chip){activeCategory=chip.dataset.category;renderChips();renderPlan()}
           const tab=e.target.closest(".tab");if(tab){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===tab));document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));$(`#${tab.dataset.view}-view`).classList.add("active"); window.scrollTo({top:0});}
-          if(e.target.closest("[data-browse]")){const browse=document.querySelector('[data-view=\"plan\"]');browse.click()}
+          if(e.target.closest("[data-browse]")){const browse=document.querySelector('[data-view="plan"]');browse.click()}
           if(e.target.id==="clear-list"){cart.clear();quantities={};renderPlan();renderDashboard();renderCart();toast("Your list is clear") }
           const verify=e.target.closest("[data-verify]");if(verify){verify.closest(".verify-card").classList.toggle("done");toast("Marked for your next price check")}
 
@@ -695,7 +745,8 @@
               customItems: localStorage.getItem("basketwise-custom-items"),
               deletedBaseItems: localStorage.getItem("basketwise-deleted-base-items"),
               priceOverrides: localStorage.getItem("basketwise-price-overrides"),
-              history: localStorage.getItem("basketwise-purchase-history")
+              history: localStorage.getItem("basketwise-purchase-history"),
+              tallies: localStorage.getItem("basketwise-item-tallies")
             };
             
             const dataString = btoa(JSON.stringify(exportData));
@@ -737,6 +788,7 @@
                 if(importedData.deletedBaseItems) localStorage.setItem("basketwise-deleted-base-items", importedData.deletedBaseItems);
                 if(importedData.priceOverrides) localStorage.setItem("basketwise-price-overrides", importedData.priceOverrides);
                 if(importedData.history) localStorage.setItem("basketwise-purchase-history", importedData.history);
+                if(importedData.tallies) localStorage.setItem("basketwise-item-tallies", importedData.tallies);
                 
                 toast("Sync successful! Reloading...");
                 setTimeout(() => location.reload(), 1500);
@@ -813,7 +865,7 @@
             localStorage.setItem("basketwise-favourites", JSON.stringify([...favourites]));
             $("#price-modal").setAttribute("aria-hidden", "true");
             editItemId = null;
-            renderChips(); renderPlan(); renderDashboard(); renderCart(); renderCompare(); renderValue(); renderVerify();
+            renderChips(); renderPlan(); renderDashboard(); renderCart(); renderCompare(); renderValue(); renderVerify(); renderCounter();
             toast("Item deleted successfully");
           }
         });
