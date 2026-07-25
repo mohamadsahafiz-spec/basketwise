@@ -23,7 +23,7 @@
       :root{--ink:#183c3a;--dark:#103d3b;--cream:#f8f5ed;--paper:#fffdfa;--line:#e6e4dd;--muted:#69716c;--lime:#d8f15b;--lime-deep:#769100;--coral:#fa866a;--peach:#ffe0cd;--shadow:0 12px 35px rgba(26,57,54,.07)}
       
       body.dark-theme { --ink: #f8f5ed; --dark: #0a201f; --cream: #123d3b; --paper: #1a4d4a; --line: #2a6b66; --muted: #a4c4bc; --peach: #2a6b66; }
-      body.dark-theme .compare-toolbar select, body.dark-theme .search, body.dark-theme .chip, body.dark-theme .qty-control button, body.dark-theme .add-button, body.dark-theme .price-dialog input, body.dark-theme .price-dialog select, body.dark-theme #item-sort-select, body.dark-theme #sync-data-string { background: var(--dark); color: var(--ink); border-color: var(--line); }
+      body.dark-theme .compare-toolbar select, body.dark-theme .search, body.dark-theme .chip, body.dark-theme .qty-control button, body.dark-theme .add-button, body.dark-theme .price-dialog input, body.dark-theme .price-dialog select, body.dark-theme #item-sort-select, body.dark-theme #sync-token, body.dark-theme #sync-gist-id { background: var(--dark); color: var(--ink); border-color: var(--line); }
       body.dark-theme .search input, body.dark-theme .trip-name input { color: var(--ink); }
       body.dark-theme .cart-store-head, body.dark-theme .item-photo { background: var(--dark); }
       body.dark-theme .route-store { background: var(--dark); color: var(--ink); }
@@ -204,9 +204,8 @@
         <div id="counter-list" class="value-list"></div>
       </section>
 
-      <div style="text-align:center; margin-top: 50px; font-size: 12px; color: var(--muted);">
-        <button id="btn-export" style="background:none; border:none; color:inherit; font:inherit; text-decoration:underline; cursor:pointer;">Export Data</button> &nbsp;|&nbsp; 
-        <button id="btn-import" style="background:none; border:none; color:inherit; font:inherit; text-decoration:underline; cursor:pointer;">Import Data</button>
+      <div style="text-align:center; margin-top: 50px; font-size: 13px; color: var(--muted); padding-bottom: 20px;">
+        <button id="btn-sync-settings" style="background:none; border:none; color:inherit; font:inherit; font-weight: 600; text-decoration:underline; cursor:pointer;">Cloud Sync Settings ☁️</button>
       </div>
 
     </main>
@@ -221,7 +220,8 @@
         <label>Price (RM)<input id="price-value" type="number" inputmode="decimal" min="0" step="0.01" /></label>
         
         <div style="display:flex; gap:10px; margin-top:8px;">
-          <button id="delete-item" class="btn-secondary" style="flex:1; background:var(--coral); color:white; display:flex; justify-content:center;">Delete</button>          <button id="save-price" class="save-price" style="flex:2; margin-top:0;">Save my price</button>
+          <button id="delete-item" class="btn-secondary" style="flex:1; background:var(--coral); color:white; display:flex; justify-content:center;">Delete</button>
+          <button id="save-price" class="save-price" style="flex:2; margin-top:0;">Save my price</button>
         </div>
       </div>
     </div>
@@ -269,14 +269,98 @@
     <div id="sync-modal" class="price-modal" aria-hidden="true">
       <div class="price-dialog" role="dialog" aria-modal="true">
         <button class="close-modal" data-close-sync aria-label="Close">×</button>
-        <p class="eyebrow" id="sync-eyebrow">SYNC DATA</p><h2 id="sync-title">Export Data</h2>
-        <p style="color:var(--muted); font-size:12px; margin-top:8px;" id="sync-desc">Copy this code and paste it into the Import box on your phone.</p>
-        <textarea id="sync-data-string" style="width:100%; height:120px; margin-top:10px; border:1px solid var(--line); border-radius:8px; padding:10px; font:12px 'DM Mono', monospace; background:transparent;" placeholder="Paste sync code here..."></textarea>
-        <button id="btn-sync-action" class="save-price" style="margin-top:16px;">Copy to Clipboard</button>
+        <p class="eyebrow">GITHUB GIST SYNC</p><h2>Cloud Sync</h2>
+        <p style="color:var(--muted); font-size:12px; margin-top:8px;">Enter your secure keys to auto-sync your prices and list.</p>
+        
+        <label>GitHub Personal Access Token
+          <input id="sync-token" type="password" placeholder="ghp_..." />
+        </label>
+        <label>Secret Gist ID
+          <input id="sync-gist-id" type="text" placeholder="e.g. 8a7b6c5d4e3f2a1" />
+        </label>
+        
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button id="btn-force-pull" class="btn-secondary" style="flex:1; justify-content:center;">⬇️ Force Pull</button>
+          <button id="btn-force-push" class="btn-secondary" style="flex:1; justify-content:center;">⬆️ Force Push</button>
+        </div>
+        
+        <button id="btn-save-sync" class="save-price" style="margin-top:10px;">Save Settings</button>
+        <p id="sync-status" style="font-size:11px; text-align:center; color:var(--muted); margin-top:12px;"></p>
       </div>
     </div>
 
     <script>
+      let syncToken = localStorage.getItem("basketwise-sync-token") || "";
+      let syncGistId = localStorage.getItem("basketwise-sync-gist") || "";
+
+      function getLocalPayloadString() {
+        return JSON.stringify({
+          customStores: localStorage.getItem("basketwise-custom-stores"),
+          customItems: localStorage.getItem("basketwise-custom-items"),
+          deletedBaseItems: localStorage.getItem("basketwise-deleted-base-items"),
+          priceOverrides: localStorage.getItem("basketwise-price-overrides"),
+          history: localStorage.getItem("basketwise-purchase-history"),
+          tallies: localStorage.getItem("basketwise-item-tallies"),
+          cart: localStorage.getItem("basketwise-cart"),
+          qty: localStorage.getItem("basketwise-quantities")
+        });
+      }
+
+      async function pullFromCloud(silent = false) {
+        if(!syncToken || !syncGistId) return;
+        if(!silent) toast("Checking cloud for updates...");
+        try {
+          const res = await fetch(`https://api.github.com/gists/${syncGistId}`, { headers: { "Authorization": `token ${syncToken}` } });
+          if(!res.ok) throw new Error("API Error");
+          const data = await res.json();
+          const file = data.files["basketwise-data.json"];
+          if(file && file.content) {
+            const currentLocal = getLocalPayloadString();
+            if(file.content !== currentLocal && file.content !== "{}") {
+              const importedData = JSON.parse(file.content);
+              if(importedData.customStores) localStorage.setItem("basketwise-custom-stores", importedData.customStores);
+              if(importedData.customItems) localStorage.setItem("basketwise-custom-items", importedData.customItems);
+              if(importedData.deletedBaseItems) localStorage.setItem("basketwise-deleted-base-items", importedData.deletedBaseItems);
+              if(importedData.priceOverrides) localStorage.setItem("basketwise-price-overrides", importedData.priceOverrides);
+              if(importedData.history) localStorage.setItem("basketwise-purchase-history", importedData.history);
+              if(importedData.tallies) localStorage.setItem("basketwise-item-tallies", importedData.tallies);
+              if(importedData.cart) localStorage.setItem("basketwise-cart", importedData.cart);
+              if(importedData.qty) localStorage.setItem("basketwise-quantities", importedData.qty);
+              
+              if(!silent) {
+                toast("Data downloaded! Reloading screen...");
+                setTimeout(() => location.reload(), 1000);
+              } else {
+                location.reload(); 
+              }
+            } else {
+              if(!silent) toast("You're already up to date.");
+            }
+          }
+        } catch(e) {
+          console.error(e);
+          if(!silent) toast("Sync failed. Check your token/ID.");
+        }
+      }
+
+      async function pushToCloud(silent = false) {
+        if(!syncToken || !syncGistId) return;
+        const exportData = getLocalPayloadString();
+        
+        try {
+          const res = await fetch(`https://api.github.com/gists/${syncGistId}`, {
+            method: "PATCH",
+            headers: { "Authorization": `token ${syncToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ files: { "basketwise-data.json": { content: exportData } } })
+          });
+          if(!res.ok) throw new Error("API Error");
+          if(!silent) toast("Cloud data safely updated! ☁️");
+        } catch(e) {
+          console.error(e);
+          if(!silent) toast("Failed to upload data to cloud.");
+        }
+      }
+
       const baseStores = ["Megamart", "TF Value-Mart", "Econsave", "Babymall", "AEON", "99 Speed Mart", "Top Opal"];
       const customStores = JSON.parse(localStorage.getItem("basketwise-custom-stores") || "[]");
       const stores = [...baseStores, ...customStores];
@@ -408,8 +492,6 @@
       
       let itemSortMode = localStorage.getItem("basketwise-item-sort") || "default";
       let purchaseHistory = JSON.parse(localStorage.getItem("basketwise-purchase-history") || "[]");
-      
-      let syncMode = 'export';
 
       const $ = s => document.querySelector(s);
       const best = item => { const values = Object.entries(item.prices).filter(([,p]) => typeof p === 'number'); if (!values.length) return null; const amount = Math.min(...values.map(([,p])=>p)); return { amount, store: values.find(([,p])=>p===amount)[0] }; };
@@ -660,6 +742,8 @@
         renderStoreSelects();
         renderChips();renderPlan();renderDashboard();renderCart();renderCompare();renderValue();renderVerify();renderTrends();renderCounter();
         
+        pullFromCloud(true);
+
         document.addEventListener("click",e=>{
           if(e.target.id === "theme-toggle") {
             document.body.classList.toggle("dark-theme");
@@ -728,7 +812,9 @@
               renderDashboard(); 
               renderCart();
               renderCounter(); 
-              toast("List shared & cart cleared!"); 
+              toast("List shared & cart cleared!");
+              
+              pushToCloud(true);
             };
             if (navigator.share) {
                navigator.share({ title: 'Shopping List', text: text }).then(completeCheckout).catch(console.error);
@@ -738,8 +824,22 @@
           }
           
           const storeChip=e.target.closest("[data-store-filter]");if(storeChip){activeStoreFilter=storeChip.dataset.storeFilter;renderChips();renderPlan()}
-          const add=e.target.closest("[data-add]");if(add){const id=Number(add.dataset.add);if(cart.has(id)){cart.delete(id);delete quantities[id]}else{cart.add(id);quantities[id]=1}renderPlan();renderDashboard();renderCart();toast(cart.has(id)?"Added to your cart":"Removed from your cart");}
-          const qty=e.target.closest("[data-qty]");if(qty){const id=Number(qty.dataset.item),next=(quantities[id]||1)+Number(qty.dataset.qty);if(next<1){cart.delete(id);delete quantities[id];toast("Removed from your cart")}else{quantities[id]=next;toast(`Quantity updated to ${next}`)}renderPlan();renderDashboard();renderCart()}
+          const add=e.target.closest("[data-add]");
+          if(add){
+            const id=Number(add.dataset.add);
+            if(cart.has(id)){cart.delete(id);delete quantities[id]}else{cart.add(id);quantities[id]=1}
+            renderPlan();renderDashboard();renderCart();
+            toast(cart.has(id)?"Added to your cart":"Removed from your cart");
+            pushToCloud(true);
+          }
+          const qty=e.target.closest("[data-qty]");
+          if(qty){
+            const id=Number(qty.dataset.item),next=(quantities[id]||1)+Number(qty.dataset.qty);
+            if(next<1){cart.delete(id);delete quantities[id];toast("Removed from your cart")}
+            else{quantities[id]=next;toast(`Quantity updated to ${next}`)}
+            renderPlan();renderDashboard();renderCart();
+            pushToCloud(true);
+          }
           const favourite=e.target.closest("[data-favorite]");if(favourite){const id=Number(favourite.dataset.favorite);favourites.has(id)?favourites.delete(id):favourites.add(id);localStorage.setItem("basketwise-favourites",JSON.stringify([...favourites]));renderPlan();toast(favourites.has(id)?"Saved to My picks":"Removed from My picks")}
           
           const edit=e.target.closest("[data-edit-price]");if(edit){
@@ -754,41 +854,12 @@
           const chip=e.target.closest("[data-category]");if(chip){activeCategory=chip.dataset.category;renderChips();renderPlan()}
           const tab=e.target.closest(".tab");if(tab){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===tab));document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));$(`#${tab.dataset.view}-view`).classList.add("active"); window.scrollTo({top:0});}
           if(e.target.closest("[data-browse]")){const browse=document.querySelector('[data-view="plan"]');browse.click()}
-          if(e.target.id==="clear-list"){cart.clear();quantities={};renderPlan();renderDashboard();renderCart();toast("Your list is clear") }
+          if(e.target.id==="clear-list"){cart.clear();quantities={};renderPlan();renderDashboard();renderCart();toast("Your list is clear"); pushToCloud(true); }
           const verify=e.target.closest("[data-verify]");if(verify){verify.closest(".verify-card").classList.toggle("done");toast("Marked for your next price check")}
 
-          if(e.target.id === "btn-export") {
-            syncMode = 'export';
-            $("#sync-eyebrow").textContent = "DATA BACKUP";
-            $("#sync-title").textContent = "Export your data";
-            $("#sync-desc").textContent = "Copy this code and paste it into the Import box on your phone.";
-            $("#btn-sync-action").textContent = "Copy to Clipboard";
-            
-            const exportData = {
-              customStores: localStorage.getItem("basketwise-custom-stores"),
-              customItems: localStorage.getItem("basketwise-custom-items"),
-              deletedBaseItems: localStorage.getItem("basketwise-deleted-base-items"),
-              priceOverrides: localStorage.getItem("basketwise-price-overrides"),
-              history: localStorage.getItem("basketwise-purchase-history"),
-              tallies: localStorage.getItem("basketwise-item-tallies")
-            };
-            
-            const dataString = btoa(JSON.stringify(exportData));
-            $("#sync-data-string").value = dataString;
-            $("#sync-data-string").readOnly = true;
-            
-            $("#sync-modal").setAttribute("aria-hidden", "false");
-          }
-
-          if(e.target.id === "btn-import") {
-            syncMode = 'import';
-            $("#sync-eyebrow").textContent = "DATA SYNC";
-            $("#sync-title").textContent = "Import your data";
-            $("#sync-desc").textContent = "Paste the code from your other device here to sync them up.";
-            $("#btn-sync-action").textContent = "Sync Now";
-            $("#sync-data-string").value = "";
-            $("#sync-data-string").readOnly = false;
-            
+          if(e.target.id === "btn-sync-settings") {
+            $("#sync-token").value = syncToken;
+            $("#sync-gist-id").value = syncGistId;
             $("#sync-modal").setAttribute("aria-hidden", "false");
           }
 
@@ -796,30 +867,22 @@
             $("#sync-modal").setAttribute("aria-hidden", "true");
           }
 
-          if(e.target.id === "btn-sync-action") {
-            if (syncMode === 'export') {
-              navigator.clipboard.writeText($("#sync-data-string").value).then(() => {
-                toast("Code copied to clipboard!");
-              });
-            } else {
-              try {
-                const importedStr = $("#sync-data-string").value.trim();
-                if(!importedStr) { toast("Please paste a code first."); return; }
-                const importedData = JSON.parse(atob(importedStr));
-                
-                if(importedData.customStores) localStorage.setItem("basketwise-custom-stores", importedData.customStores);
-                if(importedData.customItems) localStorage.setItem("basketwise-custom-items", importedData.customItems);
-                if(importedData.deletedBaseItems) localStorage.setItem("basketwise-deleted-base-items", importedData.deletedBaseItems);
-                if(importedData.priceOverrides) localStorage.setItem("basketwise-price-overrides", importedData.priceOverrides);
-                if(importedData.history) localStorage.setItem("basketwise-purchase-history", importedData.history);
-                if(importedData.tallies) localStorage.setItem("basketwise-item-tallies", importedData.tallies);
-                
-                toast("Sync successful! Reloading...");
-                setTimeout(() => location.reload(), 1500);
-              } catch (err) {
-                toast("Invalid sync code. Please check and try again.");
-              }
-            }
+          if(e.target.id === "btn-save-sync") {
+            syncToken = $("#sync-token").value.trim();
+            syncGistId = $("#sync-gist-id").value.trim();
+            localStorage.setItem("basketwise-sync-token", syncToken);
+            localStorage.setItem("basketwise-sync-gist", syncGistId);
+            $("#sync-modal").setAttribute("aria-hidden", "true");
+            toast("Sync settings saved!");
+            pullFromCloud(true);
+          }
+
+          if(e.target.id === "btn-force-pull") {
+             pullFromCloud(false);
+          }
+
+          if(e.target.id === "btn-force-push") {
+             pushToCloud(false);
           }
         });
         
@@ -852,7 +915,9 @@
           renderPlan();
           renderCompare();
           toast(name + " added successfully!");
+          pushToCloud(true);
         });
+        
         $("#save-price").addEventListener("click",()=>{
           const value=Number($("#price-value").value),store=$("#price-store").value;
           if(editItemId===null||!Number.isFinite(value)||value<=0){toast("Enter a valid price first");return}
@@ -867,8 +932,10 @@
           $("#price-modal").setAttribute("aria-hidden","true");
           renderPlan();renderDashboard();renderCart();renderCompare();renderValue();renderTrends();renderCounter();
           setLastUpdateToToday();
-          toast("Your price has updated the plan")
+          toast("Your price has updated the plan");
+          pushToCloud(true);
         });
+
         $("#delete-item").addEventListener("click", () => {
           if(editItemId === null) return;
           if(confirm("Are you sure you want to permanently delete this item?")) {
@@ -891,8 +958,10 @@
             editItemId = null;
             renderChips(); renderPlan(); renderDashboard(); renderCart(); renderCompare(); renderValue(); renderVerify(); renderCounter();
             toast("Item deleted successfully");
+            pushToCloud(true);
           }
         });
+
         $("#save-new-item").addEventListener("click",()=>{
           const name = $("#add-name").value.trim();
           if(!name) { toast("Please enter an item name"); return; }
@@ -924,6 +993,7 @@
           $("#add-price").value = ""; 
           renderChips(); renderPlan(); renderVerify(); renderCompare(); renderValue();
           toast("New item added to your list!");
+          pushToCloud(true);
         });
       });
     </script>
