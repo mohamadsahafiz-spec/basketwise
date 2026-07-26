@@ -295,15 +295,15 @@
 
       function getLocalPayloadString() {
         return JSON.stringify({
-          customStores: localStorage.getItem("basketwise-custom-stores"),
-          customItems: localStorage.getItem("basketwise-custom-items"),
-          deletedBaseItems: localStorage.getItem("basketwise-deleted-base-items"),
-          priceOverrides: localStorage.getItem("basketwise-price-overrides"),
-          history: localStorage.getItem("basketwise-purchase-history"),
-          tallies: localStorage.getItem("basketwise-item-tallies"),
-          cart: localStorage.getItem("basketwise-cart"),
-          qty: localStorage.getItem("basketwise-quantities"),
-          checked: localStorage.getItem("basketwise-checked-items")
+          "basketwise-custom-stores": localStorage.getItem("basketwise-custom-stores"),
+          "basketwise-custom-items": localStorage.getItem("basketwise-custom-items"),
+          "basketwise-deleted-base-items": localStorage.getItem("basketwise-deleted-base-items"),
+          "basketwise-price-overrides": localStorage.getItem("basketwise-price-overrides"),
+          "basketwise-purchase-history": localStorage.getItem("basketwise-purchase-history"),
+          "basketwise-item-tallies": localStorage.getItem("basketwise-item-tallies"),
+          "basketwise-cart": localStorage.getItem("basketwise-cart"),
+          "basketwise-quantities": localStorage.getItem("basketwise-quantities"),
+          "basketwise-checked-items": localStorage.getItem("basketwise-checked-items")
         });
       }
 
@@ -315,27 +315,54 @@
           if(!res.ok) throw new Error("API Error");
           const data = await res.json();
           const file = data.files["basketwise-data.json"];
-          if(file && file.content) {
+          
+          if(file && file.content && file.content.trim() !== "" && file.content.trim() !== "{}") {
             const currentLocal = getLocalPayloadString();
-            if(file.content !== currentLocal && file.content !== "{}") {
+            
+            // Normalize both strings to safely ignore GitHub's invisible newlines or spacing loops
+            const normalizedCloud = JSON.stringify(JSON.parse(file.content));
+            const normalizedLocal = JSON.stringify(JSON.parse(currentLocal));
+            
+            if(normalizedCloud !== normalizedLocal) {
               const importedData = JSON.parse(file.content);
-              if(importedData.customStores) localStorage.setItem("basketwise-custom-stores", importedData.customStores);
-              if(importedData.customItems) localStorage.setItem("basketwise-custom-items", importedData.customItems);
-              if(importedData.deletedBaseItems) localStorage.setItem("basketwise-deleted-base-items", importedData.deletedBaseItems);
-              if(importedData.priceOverrides) localStorage.setItem("basketwise-price-overrides", importedData.priceOverrides);
-              if(importedData.history) localStorage.setItem("basketwise-purchase-history", importedData.history);
-              if(importedData.tallies) localStorage.setItem("basketwise-item-tallies", importedData.tallies);
-              if(importedData.cart) localStorage.setItem("basketwise-cart", importedData.cart);
-              if(importedData.qty) localStorage.setItem("basketwise-quantities", importedData.qty);
-              if(importedData.checked) localStorage.setItem("basketwise-checked-items", importedData.checked);
+              
+              // Handle backwards compatibility if cloud uses old simple keys
+              const keyMap = {
+                customStores: "basketwise-custom-stores",
+                customItems: "basketwise-custom-items",
+                deletedBaseItems: "basketwise-deleted-base-items",
+                priceOverrides: "basketwise-price-overrides",
+                history: "basketwise-purchase-history",
+                tallies: "basketwise-item-tallies",
+                cart: "basketwise-cart",
+                qty: "basketwise-quantities",
+                checked: "basketwise-checked-items"
+              };
+              
+              const isLegacy = importedData.customStores !== undefined;
+              
+              Object.values(keyMap).forEach(localKey => {
+                 const cloudKey = isLegacy ? Object.keys(keyMap).find(k => keyMap[k] === localKey) : localKey;
+                 const val = importedData[cloudKey];
+                 if (val !== null && val !== undefined) {
+                     localStorage.setItem(localKey, val);
+                 } else {
+                     localStorage.removeItem(localKey);
+                 }
+              });
               
               if(!silent) {
                 toast("Data downloaded! Reloading screen...");
                 setTimeout(() => location.reload(), 1000);
               } else {
-                location.reload(); 
+                // The ultimate fail-safe: prevent back-to-back infinite reloads
+                if(!sessionStorage.getItem("basketwise-reloaded")) {
+                  sessionStorage.setItem("basketwise-reloaded", "true");
+                  location.reload();
+                }
               }
             } else {
+              sessionStorage.removeItem("basketwise-reloaded");
               if(!silent) toast("You're already up to date.");
             }
           }
